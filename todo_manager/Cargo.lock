@@ -1,4 +1,4 @@
-[root]
+[[package]]
 name = "todo_manager"
 version = "0.1.0"
 
