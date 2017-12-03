@@ -51,6 +51,8 @@ pub fn display()
 {
 	let file = fs::OpenOptions::new()
 		.read( true )
+		.create( true )
+		.write( true )
 		.open( common::get_tasks_file() ).unwrap_or_else( | err | {
 			eprintln!( "Error occured: {}", err );
 			process::exit( 1 );
@@ -62,14 +64,15 @@ pub fn display()
 
 	let count = lines.len();
 
-	println!( "Task ID\t\tTask" );
-	for line in lines {
-		println!( "{}:\t\t{}", i, line );
-		i += 1;
-	}
-
 	if count <= 0 {
 		println!( "No tasks to do! Yaaaaaaaaay!" );
+	}
+	else {
+		println!( "Task ID\t\tTask" );
+		for line in lines {
+			println!( "{}:\t\t{}", i, line );
+			i += 1;
+		}
 	}
 }
 
