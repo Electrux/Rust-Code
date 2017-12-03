@@ -78,7 +78,7 @@ pub fn remove_task( file: fs::File, num: usize ) -> String
 	let num = num - 1;
 
 	if num >= count {
-		eprintln!( "ID entered is too large" );
+		eprintln!( "ID entered is too large or there is no task left to remove" );
 		process::exit( 1 );
 	}
 
