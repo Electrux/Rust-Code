@@ -14,9 +14,10 @@ fn main()
 	}
 
 	match args[ 1 ].trim() {
-		"add" => todo_manager::insert( & args ),
+		"do" => todo_manager::insert( & args ),
 		"done" => todo_manager::delete( & args ),
-		"show" => todo_manager::display(),
+		"swap" => todo_manager::switch( & args ),
+		"list" => todo_manager::display(),
 		"help" => todo_manager::help(),
 		_ => {
 			eprintln!( "Invalid parameter. Use {} help for information", args[ 0 ] );

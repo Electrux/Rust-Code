@@ -21,7 +21,7 @@ pub fn get_tasks_file() -> String
 	file
 }
 
-pub fn combineparams( args: & Vec< String >, from: usize, to: usize ) -> String
+pub fn combine_params( args: & Vec< String >, from: usize, to: usize ) -> String
 {
 	if from >= to {
 		return String::new()
@@ -70,7 +70,7 @@ pub fn append_to_file( file: & fs::File, line: & str )
 		} );
 }
 
-pub fn remove_task( file: fs::File, num: usize ) -> String
+pub fn remove_task( mut file: fs::File, num: usize ) -> String
 {
 	let lines = get_file_lines( & file );
 	let count = lines.len();
@@ -82,22 +82,7 @@ pub fn remove_task( file: fs::File, num: usize ) -> String
 		process::exit( 1 );
 	}
 
-	drop( file );
-
-	fs::remove_file( get_tasks_file() )
-		.unwrap_or_else( | err | {
-			eprintln!( "Unable to delete file: {}", err );
-			process::exit( 1 );
-		} );
-
-	let file = fs::OpenOptions::new()
-		.read( true )
-		.append( true )
-		.create( true )
-		.open( get_tasks_file() ).unwrap_or_else( | err | {
-			eprintln!( "Error occured: {}", err );
-			process::exit( 1 );
-		} );
+	file = del_and_recreate( file );
 
 	let mut i: usize = 0;
 
@@ -113,4 +98,53 @@ pub fn remove_task( file: fs::File, num: usize ) -> String
 	}
 
 	removedline
+}
+
+pub fn switch_tasks( mut file: fs::File, t1: usize, t2: usize )
+{
+	let mut lines = get_file_lines( & file );
+	let count = lines.len();
+
+	let t1 = t1 - 1;
+	let t2 = t2 - 1;
+
+	if t1 >= count {
+		eprintln!( "First ID entered is too large or there is no task left in list" );
+		process::exit( 1 );
+	}
+
+	if t2 >= count {
+		eprintln!( "Second ID entered is too large or there is no task left in list" );
+		process::exit( 1 );
+	}
+
+	file = del_and_recreate( file );
+
+	let tempstr = lines[ t1 ].clone();
+	lines[ t1 ] = lines[ t2 ].clone();
+	lines[ t2 ] = tempstr;
+
+	for line in lines {
+		append_to_file( & file, & line );
+	}
+}
+
+pub fn del_and_recreate( file: fs::File ) -> fs::File
+{
+	drop( file );
+
+	fs::remove_file( get_tasks_file() )
+		.unwrap_or_else( | err | {
+			eprintln!( "Unable to delete file: {}", err );
+			process::exit( 1 );
+		} );
+
+	fs::OpenOptions::new()
+		.read( true )
+		.append( true )
+		.create( true )
+		.open( get_tasks_file() ).unwrap_or_else( | err | {
+			eprintln!( "Error occured: {}", err );
+			process::exit( 1 );
+		} )
 }
