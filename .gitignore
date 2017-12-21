@@ -1,6 +1,7 @@
 # Cargo generated target #
 ##########################
 target/
+*.lock
 
 # Compiled source #
 ###################
