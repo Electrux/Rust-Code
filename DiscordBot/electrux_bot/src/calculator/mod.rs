@@ -1,6 +1,6 @@
 pub mod intopost;
 
-use intopost::common;
+use self::intopost::common;
 
 pub fn eval_expr( expression: & str ) -> Result< i64, String >
 {
